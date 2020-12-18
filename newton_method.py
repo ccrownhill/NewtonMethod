@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+import argparse
+
 def newton_root(xn, f, f_prime, margin, verbose=False):
     i = 0
     while f(xn) > margin or f(xn) < -margin:
@@ -16,17 +18,20 @@ def newton_root(xn, f, f_prime, margin, verbose=False):
             return
     return xn
 
-def newton_root_recursion(xn, f, f_prime, margin, verbose=False):
-    pass
-
 def calculate_roots(start_values, f, f_prime, margin=1e-12, verbose=False):
     roots = list()
-    for start_x in start_xs:
+    for start_x in start_values:
         print(f"Starting with x value: {start_x} ...\n")
         root = newton_root(start_x, f, f_prime, margin=margin, verbose=verbose)
         print(f"\t-->Calculated root value: {root}\n\n") 
         if root:
             roots.append(root)
+    return roots
+
+def remove_duplicates(roots):
+    for i in range(len(roots)-1, -1, -1): # iterate backwards to prevent element skipping after deletion
+        if roots.index(roots[i]) != i:
+            del roots[i]
     return roots
 
 def generate_root_output(roots):
@@ -41,14 +46,25 @@ def generate_root_output(roots):
 
 
 if __name__=="__main__":
-    f = lambda x: x**2 + 1
-    f_prime = lambda x: 2*x
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', '--function', type=str, required=True)
+    parser.add_argument('-d', '--derivative', type=str, required=True)
+    parser.add_argument('-m', '--margin', type=float, default=1e-12, required=False)
+    parser.add_argument('-p', '--precision', type=int, default=10, required=False)
+    parser.add_argument('start_values', type=float, nargs='*', default=[-2, -.2, 0.2, 2])
+    args = parser.parse_args()
 
-    margin = 1e-12
-    start_xs = [ -2, 0, 3 ]
+    f = lambda x: eval(args.function)
+    f_prime = lambda x: eval(args.derivative)
 
+    print(f"Setting precision to {args.precision} decimals (use -p or --precision to change this)\n")
 
-    roots = calculate_roots(start_xs, f, f_prime, margin=margin, verbose=False)
+    roots = calculate_roots(args.start_values, f, f_prime, margin=args.margin, verbose=False)
+
+    roots = list(map(lambda x: round(x, args.precision), roots))
+
+    roots = remove_duplicates(roots)
     root_output = generate_root_output(roots) 
 
+    print()
     print(root_output)
