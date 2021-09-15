@@ -21,9 +21,9 @@ def newton_root(xn, f, f_prime, margin, verbose=False):
 def calculate_roots(start_values, f, f_prime, margin=1e-12, verbose=False):
     roots = list()
     for start_x in start_values:
-        print(f"Starting with x value: {start_x} ...\n")
+        print(f"Starting with x value: {start_x} ...")
         root = newton_root(start_x, f, f_prime, margin=margin, verbose=verbose)
-        print(f"\t-->Calculated root value: {root}\n\n") 
+        print(f"\t--> Calculated root value: {root}\n") 
         if root:
             roots.append(root)
     return roots
@@ -34,14 +34,14 @@ def remove_duplicates(roots):
             del roots[i]
     return roots
 
-def generate_root_output(roots):
+def generate_root_output(roots, precision):
 
     if not roots:
         return "No roots found"
 
-    root_output = "Roots:"
+    root_output = "Roots:\n"
     for i in range(len(roots)):
-        root_output += f"\nx{i+1} = {roots[i]}"
+        root_output += f"x{i+1} = {roots[i]:.{precision}f}\n"
     return root_output
 
 
@@ -51,7 +51,7 @@ if __name__=="__main__":
     parser.add_argument('-d', '--derivative', type=str, required=True)
     parser.add_argument('-m', '--margin', type=float, default=1e-12, required=False)
     parser.add_argument('-p', '--precision', type=int, default=10, required=False)
-    parser.add_argument('start_values', type=float, nargs='*', default=[-2, -.2, 0.2, 2])
+    parser.add_argument('start_values', type=float, nargs='*', default=[-2.0, -0.2, 0.2, 2.0])
     args = parser.parse_args()
 
     f = lambda x: eval(args.function)
@@ -64,7 +64,6 @@ if __name__=="__main__":
     roots = list(map(lambda x: round(x, args.precision), roots))
 
     roots = remove_duplicates(roots)
-    root_output = generate_root_output(roots) 
+    root_output = generate_root_output(roots, args.precision)
 
-    print()
-    print(root_output)
+    print(root_output, end='') # don't put another newline at the end
