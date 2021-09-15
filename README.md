@@ -4,7 +4,7 @@ This short script finds the roots of a function given the function and its deriv
 
 The Newton Method requires some starting guesses for roots which are by default `-2.0`, `-0.2`, `0.2` and `2.0`.
 You can also change these manually.
-Note that it is important that you choose as least as many starting values as the number of roots of the function.
+Note that it is important that you choose at least as many starting values as the number of roots of the function.
 
 ## Usage
 
